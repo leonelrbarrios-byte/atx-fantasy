@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ATX Fantasy</title>
+  <meta name="theme-color" content="#0b1020" />
+  <style>
+    :root{
+      --bg:#070b16;
+      --panel:#0d1430;
+      --panel-2:#111a3d;
+      --line:#26315f;
+      --text:#f4f7ff;
+      --muted:#9ba7d4;
+      --blue:#4d74ff;
+      --blue-2:#7b8fff;
+      --green:#1dd19f;
+      --green-2:#0ea472;
+      --orange:#ff9d42;
+      --red:#ff5b76;
+      --chip:#151f45;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:radial-gradient(circle at top, #1a2780 0%, #0d1430 26%, var(--bg) 65%);
+      min-height:100vh;
+    }
+    a{color:inherit;text-decoration:none}
+    .app{max-width:1180px;margin:0 auto;padding:18px 16px 100px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 4px 16px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,var(--blue),#8d6eff);
+      display:grid;place-items:center;font-weight:800;box-shadow:var(--shadow)
+    }
+    .brand h1{font-size:1.15rem;margin:0;line-height:1}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:.82rem}
+    .top-actions{display:flex;gap:10px;align-items:center}
+    button, select, input{
+      font:inherit;
+    }
+    .icon-btn,.primary,.ghost,.chip,.tab,.plan-btn,.small-btn{
+      border:none;color:var(--text);cursor:pointer;
+    }
+    .icon-btn{
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+      width:42px;height:42px;border-radius:14px;
+    }
+    .hero{
+      background:linear-gradient(180deg,rgba(17,26,61,.94),rgba(10,16,36,.95));
+      border:1px solid rgba(128,149,255,.18);
+      box-shadow:var(--shadow);
+      border-radius:30px;padding:20px;
+      position:relative;overflow:hidden;
+    }
+    .hero:before{
+      content:"";position:absolute;inset:auto -30% -35% auto;width:360px;height:360px;border-radius:50%;
+      background:radial-gradient(circle, rgba(77,116,255,.22), rgba(77,116,255,0));
+      pointer-events:none;
+    }
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    .hero h2{font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.02;margin:6px 0 12px;max-width:640px}
+    .hero p{margin:0;color:#c9d3ff;max-width:650px;line-height:1.45}
+    .hero-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+    .stat-box{background:rgba(255,255,255,.04);padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.06)}
+    .stat-box .label{font-size:.78rem;color:var(--muted)}
+    .stat-box .value{font-size:1.25rem;font-weight:800;margin-top:4px}
+    .hero-side{display:flex;flex-direction:column;gap:12px}
+    .mini-panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:22px;padding:16px}
+    .mini-panel h3{margin:0 0 10px;font-size:1rem}
+    .mini-list{display:flex;flex-direction:column;gap:10px}
+    .mini-item{display:flex;justify-content:space-between;gap:10px;font-size:.93rem}
+    .mini-item span:last-child{font-weight:700}
+    .green{color:var(--green)} .orange{color:var(--orange)} .red{color:var(--red)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+    .toolbar > *{background:rgba(8,13,32,.9);border:1px solid rgba(120,144,255,.15);border-radius:16px;padding:12px 14px}
+    .toolbar select,.toolbar input{background:transparent;border:none;color:var(--text);outline:none;width:100%}
+    .toolbar .wide{flex:1 1 220px}
+    .toolbar .small{min-width:140px}
+    .chip-row,.tabs{display:flex;gap:10px;overflow:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none}
+    .chip-row::-webkit-scrollbar,.tabs::-webkit-scrollbar{display:none}
+    .chip,.tab,.ghost,.primary,.plan-btn,.small-btn{
+      padding:11px 14px;border-radius:14px;background:var(--chip);border:1px solid rgba(255,255,255,.08)
+    }
+    .chip.active,.tab.active{background:linear-gradient(180deg,#3157ea,#243ca7);border-color:rgba(163,180,255,.35)}
+    .tab{white-space:nowrap}
+    .primary{background:linear-gradient(180deg,#4d74ff,#2947b9);font-weight:700}
+    .ghost{background:rgba(255,255,255,.04)}
+    .section{margin-top:18px}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}
+    .section-head h3{margin:0;font-size:1.2rem}
+    .section-head p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+    .grid{display:grid;gap:14px}
+    .cards{grid-template-columns:repeat(3,1fr)}
+    .card{
+      background:linear-gradient(180deg,rgba(12,19,46,.98),rgba(7,11,24,.98));
+      border:1px solid rgba(132,152,255,.14);
+      border-radius:26px;padding:16px;box-shadow:var(--shadow);
+    }
+    .player-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .player-meta{display:flex;gap:12px}
+    .avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#26315f,#0e1536);border:1px solid rgba(255,255,255,.08);display:grid;place-items:center;font-weight:800;color:#d4dcff}
+    .name{font-size:1.05rem;font-weight:800}
+    .sub{font-size:.9rem;color:#cad3ff;margin-top:3px}
+    .tag{font-size:.74rem;padding:7px 10px;border-radius:999px;border:1px solid currentColor;display:inline-flex;align-items:center;gap:6px}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+    .metric{padding:10px 8px;border-radius:14px;text-align:center;background:#0d1638;border:1px solid rgba(255,255,255,.06)}
+    .metric .k{color:var(--muted);font-size:.74rem}
+    .metric .v{margin-top:4px;font-weight:800;font-size:1rem}
+    .cta-row{display:flex;gap:10px;margin-top:14px}
+    .small-btn{padding:10px 12px;border-radius:12px;font-size:.9rem}
+    .small-btn.primary{background:linear-gradient(180deg,#1fd5a2,#10976e)}
+    .view{display:none}
+    .view.active{display:block}
+    .two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:12px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);font-size:.94rem}
+    .table th{color:var(--muted);font-weight:600}
+    .table-wrap{overflow:auto}
+    .note{color:var(--muted);font-size:.88rem;line-height:1.45}
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .plan{position:relative}
+    .plan.popular{outline:2px solid rgba(29,209,159,.5)}
+    .plan .badge{position:absolute;top:14px;right:14px;background:rgba(29,209,159,.14);color:#7cf3c7;border:1px solid rgba(29,209,159,.45);padding:6px 10px;border-radius:999px;font-size:.75rem;font-weight:700}
+    .price{font-size:2rem;font-weight:900;margin:10px 0}
+    .plan ul{padding-left:18px;color:#d9e0ff;line-height:1.6}
+    .footer-nav{
+      position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:min(94%,760px);
+      background:rgba(8,11,24,.88);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);
+      border-radius:24px;padding:10px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;z-index:20;
+      box-shadow:var(--shadow)
+    }
+    .nav-item{border:none;background:transparent;color:#cfdaff;padding:10px 6px;border-radius:16px;font-size:.82rem;cursor:pointer}
+    .nav-item.active{background:rgba(77,116,255,.18);color:white}
+    .banner{background:rgba(255,157,66,.12);color:#ffd0a6;border:1px solid rgba(255,157,66,.22);padding:12px 14px;border-radius:16px;margin:16px 0;font-size:.93rem}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:end;justify-content:center;padding:18px;z-index:30}
+    .modal.active{display:flex}
+    .sheet{width:min(100%,680px);background:linear-gradient(180deg,#10173a,#090d1f);border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:20px;box-shadow:var(--shadow)}
+    .sheet h3{margin:0 0 8px}
+    .field{margin:12px 0}
+    .field label{display:block;margin-bottom:6px;color:var(--muted);font-size:.88rem}
+    .field input,.field textarea,.field select{width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:#0a1026;color:var(--text)}
+    .sheet-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(29,209,159,.12);border:1px solid rgba(29,209,159,.3);font-size:.8rem;color:#8bf5cf}
+    .split{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    @media (max-width: 960px){
+      .hero-grid,.two-col,.cards,.pricing{grid-template-columns:1fr}
+      .hero-stat-row{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width: 640px){
+      .app{padding:14px 12px 120px}
+      .metrics{grid-template-columns:repeat(3,1fr)}
+      .footer-nav{grid-template-columns:repeat(3,1fr);row-gap:6px}
+      .toolbar > *{width:100%}
+      .section-head{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">ATX</div>
+        <div>
+          <h1>ATX Fantasy</h1>
+          <p>NBA + MLB EV finder</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="openSettings">⚙️</button>
+        <button class="primary" id="openSignup">Get Pro</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="pill">Live-style demo • Safari-ready • Built for launch</span>
+          <h2>Build your own betting edge brand and start charging for premium picks.</h2>
+          <p>
+            ATX Fantasy is designed like a real EV dashboard with props, best odds, results tracking, pricing, signup, Discord CTA, and launch settings for Odds API, Supabase, Stripe, and Vercel.
+          </p>
+          <div class="hero-stat-row">
+            <div class="stat-box"><div class="label">Tracked Props</div><div class="value">24</div></div>
+            <div class="stat-box"><div class="label">Books Compared</div><div class="value">5</div></div>
+            <div class="stat-box"><div class="label">Avg Edge</div><div class="value green">+6.1%</div></div>
+            <div class="stat-box"><div class="label">Demo ROI</div><div class="value green">+12.8%</div></div>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="mini-panel">
+            <h3>Launch checklist</h3>
+            <div class="mini-list">
+              <div class="mini-item"><span>Domain</span><span class="orange">Buy on Namecheap</span></div>
+              <div class="mini-item"><span>Hosting</span><span class="green">Vercel ready</span></div>
+              <div class="mini-item"><span>Payments</span><span class="orange">Stripe pending</span></div>
+              <div class="mini-item"><span>Auth + DB</span><span class="orange">Supabase pending</span></div>
+              <div class="mini-item"><span>Odds feed</span><span class="orange">API key needed</span></div>
+            </div>
+          </div>
+          <div class="mini-panel">
+            <h3>What’s built in</h3>
+            <div class="mini-list">
+              <div class="mini-item"><span>Props scanner</span><span>✅</span></div>
+              <div class="mini-item"><span>+EV board</span><span>✅</span></div>
+              <div class="mini-item"><span>Best odds table</span><span>✅</span></div>
+              <div class="mini-item"><span>Results tracker</span><span>✅</span></div>
+              <div class="mini-item"><span>Pricing page</span><span>✅</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="banner">
+      This demo is built as an informational betting analytics site. To go live with real users, connect a real odds feed, your domain, Stripe, and a hosted backend.
+    </div>
+
+    <div class="toolbar">
+      <div class="small">
+        <select id="sportFilter">
+          <option value="ALL">All Sports</option>
+          <option value="NBA">NBA</option>
+          <option value="MLB">MLB</option>
+        </select>
+      </div>
+      <div class="small">
+        <select id="marketFilter">
+          <option value="ALL">All Markets</option>
+          <option value="Points">Points</option>
+          <option value="Rebounds">Rebounds</option>
+          <option value="Hits">Hits</option>
+          <option value="Strikeouts">Strikeouts</option>
+          <option value="Home Runs">Home Runs</option>
+        </select>
+      </div>
+      <div class="small">
+        <select id="bookFilter">
+          <option value="ALL">All Books</option>
+          <option value="DraftKings">DraftKings</option>
+          <option value="FanDuel">FanDuel</option>
+          <option value="BetMGM">BetMGM</option>
+          <option value="Caesars">Caesars</option>
+          <option value="PrizePicks">PrizePicks</option>
+        </select>
+      </div>
+      <div class="wide">
+        <input id="searchInput" placeholder="Search player, team, or prop" />
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-view="props">Props</button>
+      <button class="tab" data-view="ev">+EV</button>
+      <button class="tab" data-view="odds">Best Odds</button>
+      <button class="tab" data-view="results">Results</button>
+      <button class="tab" data-view="pricing">Pricing</button>
+      <button class="tab" data-view="launch">Launch</button>
+    </div>
+
+    <section class="view active" id="view-props">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h3>Prop Board</h3>
+            <p>Mobile-first cards inspired by the layout you sent, focused on NBA and MLB.</p>
+          </div>
+          <div class="chip-row" id="quickChips">
+            <button class="chip active" data-chip="ALL">All</button>
+            <button class="chip" data-chip="High EV">High EV</button>
+            <button class="chip" data-chip="Popular">Popular</button>
+            <button class="chip" data-chip="Tonight">Tonight</button>
+          </div>
+        </div>
+        <div class="grid cards" id="cards"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-ev">
+      <div class="section two-col">
+        <div class="card">
+          <div class="section-head"><div><h3>Top +EV spots</h3><p>Sorted by demo edge percentage.</p></div></div>
+          <div class="table-wrap"><table class="table" id="evTable"></table></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><div><h3>How edge is measured</h3><p>Use this section as your sales pitch.</p></div></div>
+          <p class="note">ATX Fantasy compares the available sportsbook price against a fair no-vig number and your model hit rate. Bets with positive expected value are highlighted so subscribers can find lines that beat the market.</p>
+          <div class="metrics" style="margin-top:12px">
+            <div class="metric"><div class="k">Avg Edge</div><div class="v green">+6.1%</div></div>
+            <div class="metric"><div class="k">Best Book</div><div class="v">DK</div></div>
+            <div class="metric"><div class="k">Alert Rate</div><div class="v">30s</div></div>
+            <div class="metric"><div class="k">No-Vig</div><div class="v">On</div></div>
+            <div class="metric"><div class="k">Model</div><div class="v">L5/L10</div></div>
+          </div>
+          <div class="cta-row">
+            <button class="small-btn primary" id="joinDiscord">Open Discord CTA</button>
+            <button class="small-btn ghost" id="openSignup2">Offer Pro Trial</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-odds">
+      <div class="section card">
+        <div class="section-head"><div><h3>Best Odds Scanner</h3><p>Compare books and show which price is best for each prop.</p></div></div>
+        <div class="table-wrap"><table class="table" id="oddsTable"></table></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-results">
+      <div class="section two-col">
+        <div class="card">
+          <div class="section-head"><div><h3>Results tracker</h3><p>Use this to sell transparency and proof of performance.</p></div></div>
+          <div class="table-wrap"><table class="table" id="resultsTable"></table></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><div><h3>Performance snapshot</h3><p>Demo figures you can replace with real tracked data.</p></div></div>
+          <div class="hero-stat-row" style="margin-top:0">
+            <div class="stat-box"><div class="label">Win Rate</div><div class="value">58.7%</div></div>
+            <div class="stat-box"><div class="label">CLV</div><div class="value green">+1.9%</div></div>
+            <div class="stat-box"><div class="label">Units</div><div class="value green">+18.4u</div></div>
+            <div class="stat-box"><div class="label">Tracked Bets</div><div class="value">143</div></div>
+          </div>
+          <p class="note" style="margin-top:14px">Post your verified record here with date found, line played, closing line value, and result. This is one of the best ways to justify a paid subscription.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-pricing">
+      <div class="section">
+        <div class="section-head"><div><h3>Subscription plans</h3><p>Ready for Stripe once you connect checkout links.</p></div></div>
+        <div class="pricing">
+          <div class="card plan">
+            <h3>Free</h3>
+            <div class="price">$0</div>
+            <p class="note">Good for lead generation and email capture.</p>
+            <ul>
+              <li>3 delayed picks daily</li>
+              <li>Limited props access</li>
+              <li>Results preview</li>
+            </ul>
+            <button class="plan-btn ghost" data-plan="Free">Get Free</button>
+          </div>
+          <div class="card plan popular">
+            <div class="badge">Most Popular</div>
+            <h3>Pro</h3>
+            <div class="price">$19<span style="font-size:1rem;font-weight:600">/mo</span></div>
+            <p class="note">Best starting point for your first paying users.</p>
+            <ul>
+              <li>Full +EV board</li>
+              <li>Best odds scanner</li>
+              <li>Discord alerts</li>
+              <li>NBA + MLB props</li>
+            </ul>
+            <button class="plan-btn primary" data-plan="Pro">Start Pro</button>
+          </div>
+          <div class="card plan">
+            <h3>VIP</h3>
+            <div class="price">$49<span style="font-size:1rem;font-weight:600">/mo</span></div>
+            <p class="note">For your heaviest users who want alerts first.</p>
+            <ul>
+              <li>Everything in Pro</li>
+              <li>Priority alerts</li>
+              <li>Premium Discord role</li>
+              <li>Early release model picks</li>
+            </ul>
+            <button class="plan-btn ghost" data-plan="VIP">Go VIP</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-launch">
+      <div class="section two-col">
+        <div class="card">
+          <div class="section-head"><div><h3>Go-live setup</h3><p>What still needs to be connected outside this demo.</p></div></div>
+          <div class="mini-list">
+            <div class="mini-item"><span>1. Domain</span><span>atxfantasy.com</span></div>
+            <div class="mini-item"><span>2. Hosting</span><span>Vercel project</span></div>
+            <div class="mini-item"><span>3. Real data</span><span>Odds API / sportsbook feed</span></div>
+            <div class="mini-item"><span>4. Auth</span><span>Supabase</span></div>
+            <div class="mini-item"><span>5. Payments</span><span>Stripe subscriptions</span></div>
+            <div class="mini-item"><span>6. Community</span><span>Discord invite</span></div>
+          </div>
+          <div class="cta-row">
+            <button class="small-btn primary" id="copyChecklist">Copy checklist</button>
+            <button class="small-btn ghost" id="openSettings2">Edit launch settings</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-head"><div><h3>Launch settings</h3><p>Save your own values here after deployment.</p></div></div>
+          <div class="field"><label>Domain</label><input value="https://atxfantasy.com" readonly /></div>
+          <div class="field"><label>Vercel project</label><input value="atx-fantasy.vercel.app" readonly /></div>
+          <div class="field"><label>Stripe checkout</label><input value="Add your Stripe payment links" readonly /></div>
+          <div class="field"><label>Supabase URL</label><input value="Add your project URL" readonly /></div>
+          <div class="field"><label>Odds API key</label><input value="Add your API key in production" readonly /></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="footer-nav">
+    <button class="nav-item active" data-view="props">Props</button>
+    <button class="nav-item" data-view="ev">+EV</button>
+    <button class="nav-item" data-view="odds">Odds</button>
+    <button class="nav-item" data-view="results">Results</button>
+    <button class="nav-item" data-view="pricing">Pricing</button>
+    <button class="nav-item" data-view="launch">Launch</button>
+  </div>
+
+  <div class="modal" id="signupModal">
+    <div class="sheet">
+      <div class="split"><div><h3>ATX Fantasy signup</h3><p class="note">Use this flow for email capture until you hook up Stripe and Supabase.</p></div><button class="icon-btn" data-close="signupModal">✕</button></div>
+      <div class="field"><label>Name</label><input id="leadName" placeholder="Your name" /></div>
+      <div class="field"><label>Email</label><input id="leadEmail" placeholder="name@email.com" /></div>
+      <div class="field"><label>Plan</label><select id="leadPlan"><option>Free</option><option selected>Pro</option><option>VIP</option></select></div>
+      <div class="sheet-actions"><button class="ghost" data-close="signupModal">Cancel</button><button class="primary" id="saveLead">Save signup</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="settingsModal">
+    <div class="sheet">
+      <div class="split"><div><h3>Launch settings</h3><p class="note">These are saved only in this browser for demo use.</p></div><button class="icon-btn" data-close="settingsModal">✕</button></div>
+      <div class="field"><label>Domain</label><input id="cfgDomain" placeholder="https://atxfantasy.com" /></div>
+      <div class="field"><label>Stripe link</label><input id="cfgStripe" placeholder="https://buy.stripe.com/..." /></div>
+      <div class="field"><label>Discord invite</label><input id="cfgDiscord" placeholder="https://discord.gg/..." /></div>
+      <div class="field"><label>Odds API key</label><input id="cfgOdds" placeholder="Paste your odds API key" /></div>
+      <div class="field"><label>Notes</label><textarea id="cfgNotes" rows="4" placeholder="Anything you need to remember for launch"></textarea></div>
+      <div class="sheet-actions"><button class="ghost" data-close="settingsModal">Cancel</button><button class="primary" id="saveSettings">Save</button></div>
+    </div>
+  </div>
+
+  <script>
+    const propsData = [
+      {sport:'NBA', player:'LeBron James', market:'Points', line:'27.5', game:'Lakers vs Suns', l5:'80%', l10:'70%', avg:'29.2', diff:'+1.7', edge:7.4, book:'DraftKings', fair:'-132', odds:'+105', popular:true, tonight:true},
+      {sport:'NBA', player:'Jayson Tatum', market:'Rebounds', line:'8.5', game:'Celtics vs Heat', l5:'60%', l10:'80%', avg:'9.4', diff:'+0.9', edge:5.8, book:'FanDuel', fair:'-128', odds:'+102', popular:true, tonight:true},
+      {sport:'NBA', player:'Nikola Jokic', market:'Assists', line:'9.5', game:'Nuggets vs Kings', l5:'80%', l10:'90%', avg:'10.8', diff:'+1.3', edge:9.2, book:'BetMGM', fair:'-145', odds:'+100', popular:true, tonight:true},
+      {sport:'NBA', player:'Luka Doncic', market:'Points', line:'31.5', game:'Mavericks vs Clippers', l5:'60%', l10:'70%', avg:'33.1', diff:'+1.6', edge:4.9, book:'Caesars', fair:'-122', odds:'+100', popular:false, tonight:true},
+      {sport:'MLB', player:'Aaron Judge', market:'Home Runs', line:'0.5', game:'Yankees vs Giants', l5:'40%', l10:'50%', avg:'0.6', diff:'+0.1', edge:6.7, book:'DraftKings', fair:'+185', odds:'+230', popular:true, tonight:false},
+      {sport:'MLB', player:'Mookie Betts', market:'Hits', line:'1.5', game:'Dodgers vs Padres', l5:'80%', l10:'70%', avg:'1.8', diff:'+0.3', edge:5.1, book:'FanDuel', fair:'-118', odds:'+105', popular:true, tonight:false},
+      {sport:'MLB', player:'Gerrit Cole', market:'Strikeouts', line:'7.5', game:'Yankees vs Giants', l5:'60%', l10:'80%', avg:'8.4', diff:'+0.9', edge:8.8, book:'Caesars', fair:'-138', odds:'+100', popular:false, tonight:false},
+      {sport:'MLB', player:'Ronald Acuna Jr.', market:'Hits', line:'1.5', game:'Braves vs Phillies', l5:'60%', l10:'60%', avg:'1.7', diff:'+0.2', edge:3.9, book:'PrizePicks', fair:'-110', odds:'+102', popular:true, tonight:false},
+      {sport:'NBA', player:'Stephen Curry', market:'Points', line:'28.5', game:'Warriors vs Spurs', l5:'80%', l10:'80%', avg:'30.4', diff:'+1.9', edge:7.9, book:'DraftKings', fair:'-136', odds:'+104', popular:true, tonight:true},
+      {sport:'MLB', player:'Spencer Strider', market:'Strikeouts', line:'8.5', game:'Braves vs Phillies', l5:'80%', l10:'90%', avg:'9.7', diff:'+1.2', edge:9.5, book:'BetMGM', fair:'-146', odds:'+100', popular:true, tonight:false},
+      {sport:'NBA', player:'Domantas Sabonis', market:'Rebounds', line:'12.5', game:'Kings vs Nuggets', l5:'60%', l10:'70%', avg:'13.3', diff:'+0.8', edge:5.5, book:'FanDuel', fair:'-124', odds:'+101', popular:false, tonight:true},
+      {sport:'MLB', player:'Freddie Freeman', market:'Hits', line:'1.5', game:'Dodgers vs Padres', l5:'80%', l10:'80%', avg:'1.9', diff:'+0.4', edge:6.4, book:'DraftKings', fair:'-126', odds:'+108', popular:true, tonight:false}
+    ];
+
+    const resultsData = [
+      {date:'03/06', player:'LeBron James O27.5 PTS', edge:'+7.4%', line:'+105', close:'-112', result:'Win', units:'+1.05u'},
+      {date:'03/06', player:'Gerrit Cole O7.5 K', edge:'+8.8%', line:'+100', close:'-118', result:'Win', units:'+1.00u'},
+      {date:'03/05', player:'Mookie Betts O1.5 Hits', edge:'+5.1%', line:'+105', close:'-103', result:'Loss', units:'-1.00u'},
+      {date:'03/05', player:'Jayson Tatum O8.5 REB', edge:'+5.8%', line:'+102', close:'-109', result:'Win', units:'+1.02u'},
+      {date:'03/04', player:'Aaron Judge HR', edge:'+6.7%', line:'+230', close:'+205', result:'Loss', units:'-1.00u'}
+    ];
+
+    const bookCompare = [
+      {prop:'LeBron James O27.5 PTS', dk:'+105', fd:'+101', mgm:'+100', cz:'+102', best:'DraftKings +105'},
+      {prop:'Jokic O9.5 AST', dk:'+100', fd:'-104', mgm:'+100', cz:'-102', best:'DraftKings / BetMGM +100'},
+      {prop:'Judge HR', dk:'+230', fd:'+220', mgm:'+225', cz:'+210', best:'DraftKings +230'},
+      {prop:'Cole O7.5 K', dk:'-105', fd:'-102', mgm:'-110', cz:'+100', best:'Caesars +100'},
+      {prop:'Freeman O1.5 Hits', dk:'+108', fd:'+101', mgm:'+100', cz:'+102', best:'DraftKings +108'}
+    ];
+
+    const tabs = document.querySelectorAll('.tab');
+    const views = document.querySelectorAll('.view');
+    const navItems = document.querySelectorAll('.nav-item');
+    const cards = document.getElementById('cards');
+    const sportFilter = document.getElementById('sportFilter');
+    const marketFilter = document.getElementById('marketFilter');
+    const bookFilter = document.getElementById('bookFilter');
+    const searchInput = document.getElementById('searchInput');
+    const quickChips = document.querySelectorAll('.chip');
+    let activeChip = 'ALL';
+
+    function setView(view){
+      tabs.forEach(t=>t.classList.toggle('active', t.dataset.view===view));
+      navItems.forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+      views.forEach(v=>v.classList.toggle('active', v.id===`view-${view}`));
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    tabs.forEach(t=>t.addEventListener('click',()=>setView(t.dataset.view)));
+    navItems.forEach(n=>n.addEventListener('click',()=>setView(n.dataset.view)));
+
+    function filteredProps(){
+      const sport = sportFilter.value;
+      const market = marketFilter.value;
+      const book = bookFilter.value;
+      const q = searchInput.value.trim().toLowerCase();
+      return propsData.filter(p => {
+        const chipOk = activeChip==='ALL' || (activeChip==='High EV' ? p.edge >= 7 : activeChip==='Popular' ? p.popular : p.tonight);
+        const sportOk = sport==='ALL' || p.sport===sport;
+        const marketOk = market==='ALL' || p.market===market;
+        const bookOk = book==='ALL' || p.book===book;
+        const qOk = !q || `${p.player} ${p.game} ${p.market}`.toLowerCase().includes(q);
+        return chipOk && sportOk && marketOk && bookOk && qOk;
+      }).sort((a,b)=>b.edge-a.edge);
+    }
+
+    function renderCards(){
+      const list = filteredProps();
+      cards.innerHTML = list.map(p => `
+        <article class="card">
+          <div class="player-top">
+            <div class="player-meta">
+              <div class="avatar">${p.player.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+              <div>
+                <div class="name">${p.player}</div>
+                <div class="sub">${p.market} O/U ${p.line}</div>
+                <div class="sub">${p.game}</div>
+              </div>
+            </div>
+            <span class="tag ${p.edge>=7?'green':'orange'}">EV ${p.edge>0?'+':''}${p.edge}%</span>
+          </div>
+          <div class="metrics">
+            <div class="metric"><div class="k">L5</div><div class="v green">${p.l5}</div></div>
+            <div class="metric"><div class="k">L10</div><div class="v green">${p.l10}</div></div>
+            <div class="metric"><div class="k">AVG</div><div class="v">${p.avg}</div></div>
+            <div class="metric"><div class="k">DIFF</div><div class="v green">${p.diff}</div></div>
+            <div class="metric"><div class="k">BOOK</div><div class="v">${p.book}</div></div>
+          </div>
+          <div class="cta-row">
+            <button class="small-btn primary">${p.odds} best line</button>
+            <button class="small-btn ghost">Fair ${p.fair}</button>
+          </div>
+        </article>
+      `).join('');
+      if(!list.length){
+        cards.innerHTML = `<div class="card"><h3>No props found</h3><p class="note">Try changing your sport, market, or search filters.</p></div>`;
+      }
+      renderEVTable(list);
+    }
+
+    function renderEVTable(list){
+      const table = document.getElementById('evTable');
+      table.innerHTML = `
+        <thead><tr><th>Prop</th><th>Book</th><th>Odds</th><th>Fair</th><th>Edge</th></tr></thead>
+        <tbody>${list.slice(0,8).map(p=>`<tr><td>${p.player} O${p.line} ${p.market}</td><td>${p.book}</td><td>${p.odds}</td><td>${p.fair}</td><td class="green">+${p.edge}%</td></tr>`).join('')}</tbody>
+      `;
+    }
+
+    function renderOdds(){
+      const table = document.getElementById('oddsTable');
+      table.innerHTML = `
+        <thead><tr><th>Prop</th><th>DK</th><th>FD</th><th>MGM</th><th>Caesars</th><th>Best</th></tr></thead>
+        <tbody>${bookCompare.map(r=>`<tr><td>${r.prop}</td><td>${r.dk}</td><td>${r.fd}</td><td>${r.mgm}</td><td>${r.cz}</td><td class="green">${r.best}</td></tr>`).join('')}</tbody>
+      `;
+    }
+
+    function renderResults(){
+      const table = document.getElementById('resultsTable');
+      table.innerHTML = `
+        <thead><tr><th>Date</th><th>Pick</th><th>Edge</th><th>Line</th><th>CLV</th><th>Result</th><th>Units</th></tr></thead>
+        <tbody>${resultsData.map(r=>`<tr><td>${r.date}</td><td>${r.player}</td><td class="green">${r.edge}</td><td>${r.line}</td><td>${r.close}</td><td class="${r.result==='Win'?'green':'red'}">${r.result}</td><td class="${r.units.startsWith('+')?'green':'red'}">${r.units}</td></tr>`).join('')}</tbody>
+      `;
+    }
+
+    [sportFilter, marketFilter, bookFilter].forEach(el=>el.addEventListener('change', renderCards));
+    searchInput.addEventListener('input', renderCards);
+    quickChips.forEach(chip => chip.addEventListener('click', () => {
+      quickChips.forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      activeChip = chip.dataset.chip;
+      renderCards();
+    }));
+
+    const signupModal = document.getElementById('signupModal');
+    const settingsModal = document.getElementById('settingsModal');
+    const openSignupBtns = [document.getElementById('openSignup'), document.getElementById('openSignup2')].filter(Boolean);
+    openSignupBtns.forEach(btn => btn.addEventListener('click', ()=> signupModal.classList.add('active')));
+    document.getElementById('openSettings').addEventListener('click', ()=> settingsModal.classList.add('active'));
+    document.getElementById('openSettings2').addEventListener('click', ()=> settingsModal.classList.add('active'));
+    document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>document.getElementById(btn.dataset.close).classList.remove('active')));
+    [signupModal, settingsModal].forEach(modal=>modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.classList.remove('active'); }));
+
+    document.querySelectorAll('[data-plan]').forEach(btn => btn.addEventListener('click', ()=>{
+      document.getElementById('leadPlan').value = btn.dataset.plan;
+      signupModal.classList.add('active');
+    }));
+
+    document.getElementById('saveLead').addEventListener('click', ()=>{
+      const name = document.getElementById('leadName').value.trim();
+      const email = document.getElementById('leadEmail').value.trim();
+      const plan = document.getElementById('leadPlan').value;
+      const leads = JSON.parse(localStorage.getItem('atx_leads') || '[]');
+      leads.push({name,email,plan,createdAt:new Date().toISOString()});
+      localStorage.setItem('atx_leads', JSON.stringify(leads));
+      signupModal.classList.remove('active');
+      alert(`Saved ${plan} signup${name ? ` for ${name}` : ''}. Connect Supabase or Stripe next to collect these for real.`);
+      document.getElementById('leadName').value='';
+      document.getElementById('leadEmail').value='';
+    });
+
+    const cfgIds = ['cfgDomain','cfgStripe','cfgDiscord','cfgOdds','cfgNotes'];
+    function loadSettings(){
+      const cfg = JSON.parse(localStorage.getItem('atx_settings') || '{}');
+      cfgIds.forEach(id => { if(cfg[id]) document.getElementById(id).value = cfg[id]; });
+    }
+    document.getElementById('saveSettings').addEventListener('click', ()=>{
+      const cfg = {};
+      cfgIds.forEach(id => cfg[id] = document.getElementById(id).value);
+      localStorage.setItem('atx_settings', JSON.stringify(cfg));
+      settingsModal.classList.remove('active');
+      alert('Launch settings saved in this browser.');
+    });
+
+    document.getElementById('joinDiscord').addEventListener('click', ()=>{
+      const cfg = JSON.parse(localStorage.getItem('atx_settings') || '{}');
+      if(cfg.cfgDiscord){
+        window.open(cfg.cfgDiscord, '_blank');
+      } else {
+        settingsModal.classList.add('active');
+        alert('Add your Discord invite first.');
+      }
+    });
+
+    document.getElementById('copyChecklist').addEventListener('click', async ()=>{
+      const text = `ATX Fantasy launch checklist:\n1. Buy domain\n2. Deploy on Vercel\n3. Connect Stripe\n4. Connect Supabase\n5. Add odds API key\n6. Add Discord invite\n7. Replace demo data with live feeds`;
+      try { await navigator.clipboard.writeText(text); alert('Checklist copied.'); }
+      catch { alert(text); }
+    });
+
+    renderCards();
+    renderOdds();
+    renderResults();
+    loadSettings();
+  </script>
+</body>
+</html>
